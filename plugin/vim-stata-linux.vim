@@ -58,30 +58,37 @@ EOF
 endfun
 
 fun! RunSelection()
-let selectedLines = getbufline('%', line("'<"), line("'>"))
-if col("'>") < strlen(getline(line("'>")))
-let selectedLines[-1] = strpart(selectedLines[-1], 0, col("'>"))
-endif
-if col("'<") != 1
-let selectedLines[0] = strpart(selectedLines[0], col("'<")-1)
-endif
-call writefile(selectedLines, "/tmp/stata-exec_code")
-call RemoveComment()
-call RunTemp()
+    let selectedLines = getbufline('%', line("'<"), line("'>"))
+    if col("'>") < strlen(getline(line("'>")))
+        let selectedLines[-1] = strpart(selectedLines[-1], 0, col("'>"))
+    endif
+    if col("'<") != 1
+        let selectedLines[0] = strpart(selectedLines[0], col("'<")-1)
+    endif
+    call writefile(selectedLines, "/tmp/stata-exec_code")
+    call RemoveComment()
+    call RunTemp()
 endfun
 
 fun! RunCline()
-let selectedLines = getline('.')
-call writefile([selectedLines], "/tmp/stata-exec_code")
-call RemoveComment()
-call RunTemp()
+    let selectedLines = getline('.') " string
+    call writefile([selectedLines], "/tmp/stata-exec_code")
+    call RemoveComment()
+    call RunTemp()
+endfun
+
+fun! RunAboveline()
+    let lines = getline(1, line(".") - 1) " lists
+    call writefile(lines, "/tmp/stata-exec_code")
+    call RemoveComment()
+    call RunTemp()
 endfun
 
 fun! SourceDofile()
-call writefile(["do "], "/tmp/stata-exec_code", "b")
-let selectedDofile = expand("%:p")
-call writefile([selectedDofile], "/tmp/stata-exec_code", "a")
-call RunTemp()
+    call writefile(["do "], "/tmp/stata-exec_code", "b")
+    let selectedDofile = expand("%:p")
+    call writefile([selectedDofile], "/tmp/stata-exec_code", "a")
+    call RunTemp()
 endfun
 
 noremap  <Plug>(RunSelection)             :<C-U>call RunSelection()<CR><CR>
@@ -89,6 +96,9 @@ map  <buffer> <silent> <leader>ss         <Plug>(RunSelection)
 
 noremap  <Plug>(RunCline)                 :<C-U>call RunCline()<CR><CR>
 map  <buffer> <silent> <leader>l          <Plug>(RunCline)
+
+noremap  <Plug>(RunAboveline)             :<C-U>call RunAboveline()<CR><CR>
+map  <buffer> <silent> <leader>su         <Plug>(RunAboveline)
 
 noremap  <Plug>(SourceDofile)             :<C-U>call SourceDofile()<CR><CR>
 map  <buffer> <silent> <leader>aa         <Plug>(SourceDofile)
