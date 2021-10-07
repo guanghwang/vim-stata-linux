@@ -44,12 +44,13 @@ def run_yan():
            thiswindow="$(swaymsg -t get_tree | jq '.. \
              | (.nodes? // empty)[] | select(.focused==true) | .pid')" &&
            wl-copy -c &&
-           cat /tmp/stata-exec_code | wl-copy &&
+           wl-copy < /tmp/stata-exec_code &&
            swaymsg '[title="[Ss]tata.*"] focus' &&
            xdotool \
              key --clearmodifiers --delay 100 ctrl+v Return &&
-           swaymsg '[pid='$thiswindow' workspace='$thiswks'] focus' &&
-           wl-copy -c
+           sleep 0.5
+           wl-copy -c &&
+           swaymsg '[pid='$thiswindow' workspace='$thiswks'] focus'
            """
            )
     os.system(cmd)
