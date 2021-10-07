@@ -42,13 +42,13 @@ def run_yan():
            thiswks="$(swaymsg -t get_workspaces | jq '.[] \
              | select(.focused==true) | .num')" &&
            thiswindow="$(swaymsg -t get_tree | jq '.. \
-             | (.nodes? // empty)[] | select(.focused==true) | .app_id')" &&
+             | (.nodes? // empty)[] | select(.focused==true) | .pid')" &&
            wl-copy -c &&
            cat /tmp/stata-exec_code | wl-copy &&
            swaymsg '[title="[Ss]tata.*"] focus' &&
            xdotool \
              key --clearmodifiers --delay 100 ctrl+v Return &&
-           swaymsg '[app_id='$thiswindow' workspace='$thiswks'] focus' &&
+           swaymsg '[pid=$thiswindow workspace='$thiswks'] focus' &&
            wl-copy -c
            """
            )
