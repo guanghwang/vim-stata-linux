@@ -48,7 +48,7 @@ def run_yan():
            swaymsg '[title="[Ss]tata.*"] focus' &&
            xdotool \
              key --clearmodifiers --delay 100 ctrl+v Return &&
-           swaymsg '[pid=$thiswindow workspace='$thiswks'] focus' &&
+           swaymsg '[pid='$thiswindow' workspace='$thiswks'] focus' &&
            wl-copy -c
            """
            )
