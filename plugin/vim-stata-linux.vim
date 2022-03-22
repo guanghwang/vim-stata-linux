@@ -41,16 +41,19 @@ def run_yan():
     cmd = ("""
            thiswks="$(swaymsg -t get_workspaces | jq '.[] \
              | select(.focused==true) | .num')" &&
+           sleep 0.1s &&
            thiswindow="$(swaymsg -t get_tree | jq '.. \
              | (.nodes? // empty)[] | select(.focused==true) | .pid')" &&
            wl-copy -c &&
            wl-copy < /tmp/stata-exec_code &&
-           swaymsg '[title="[Ss]tata.*"] focus' &&
+           swaymsg '[title="[Ss]tata.*" instance="xstata"] focus' &&
+           sleep 0.5s &&
            xdotool \
-             key --clearmodifiers --delay 100 ctrl+v Return &&
-           sleep 0.5
-           wl-copy -c &&
-           swaymsg '[pid='$thiswindow' workspace='$thiswks'] focus'
+             key --clearmodifiers --delay 100 Escape ctrl+v Return &&
+           sleep 0.5s &&
+           swaymsg '[pid='$thiswindow' workspace='$thiswks'] focus' &&
+           wtype -P escape -p escape &&
+           wl-copy -c
            """
            )
     os.system(cmd)
@@ -93,15 +96,14 @@ fun! SourceDofile()
 endfun
 
 noremap  <Plug>(RunSelection)             :<C-U>call RunSelection()<CR><CR>
-map  <buffer> <silent> <leader>ss         <Plug>(RunSelection)
+" map  <buffer> <silent> <leader>ss         <Plug>(RunSelection)
+map  <silent> <leader>ss         <Plug>(RunSelection)
 
 noremap  <Plug>(RunCline)                 :<C-U>call RunCline()<CR><CR>
-map  <buffer> <silent> <leader>l          <Plug>(RunCline)
+map  <silent> <leader>l          <Plug>(RunCline)
 
 noremap  <Plug>(RunAboveline)             :<C-U>call RunAboveline()<CR><CR>
-map  <buffer> <silent> <leader>su         <Plug>(RunAboveline)
+map  <silent> <leader>su         <Plug>(RunAboveline)
 
 noremap  <Plug>(SourceDofile)             :<C-U>call SourceDofile()<CR><CR>
-map  <buffer> <silent> <leader>aa         <Plug>(SourceDofile)
-
-"command! Vim2StataToggle call RunDoLines()<CR><CR>
+map  <silent> <leader>aa         <Plug>(SourceDofile)
